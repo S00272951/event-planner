@@ -5,7 +5,7 @@ import { Event } from "../src/models/event";
 import { Guest } from "../src/models/guest";
 
 const missingId = "000000000000000000000000";
-const goodGuest = { name: "John Murphy", email: "john@example.com", rsvp: "yes" };
+const goodGuest = { name: "John Murphy", email: "john@example.com", rsvp: "yes" as const };
 
 let eventId: string;
 
