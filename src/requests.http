@@ -1,0 +1,121 @@
+@baseUrl = http://localhost:3000
+@missingId = 000000000000000000000000
+
+### ---------- EVENTS ----------
+
+### POST event (good data)
+# @name createEvent
+POST {{baseUrl}}/events
+Content-Type: application/json
+
+{
+  "title": "Sarah's Wedding",
+  "date": "2026-12-20",
+  "location": "Sligo",
+  "description": "Ceremony and reception"
+}
+
+### POST event (fails validation)
+POST {{baseUrl}}/events
+Content-Type: application/json
+
+{
+  "title": "A",
+  "date": "not a date"
+}
+
+### GET all events
+GET {{baseUrl}}/events
+
+### GET events filtered and sorted
+GET {{baseUrl}}/events?location=Sligo&sort=date
+
+### GET one event (works)
+GET {{baseUrl}}/events/{{createEvent.response.body._id}}
+
+### GET one event (not found)
+GET {{baseUrl}}/events/{{missingId}}
+
+### PUT event (works)
+PUT {{baseUrl}}/events/{{createEvent.response.body._id}}
+Content-Type: application/json
+
+{
+  "title": "Sarah and Tom's Wedding",
+  "date": "2026-12-21",
+  "location": "Sligo"
+}
+
+### PUT event (not found)
+PUT {{baseUrl}}/events/{{missingId}}
+Content-Type: application/json
+
+{
+  "title": "Nothing here",
+  "date": "2026-12-21",
+  "location": "Sligo"
+}
+
+### PUT event (invalid data)
+PUT {{baseUrl}}/events/{{createEvent.response.body._id}}
+Content-Type: application/json
+
+{
+  "title": "",
+  "date": "bad"
+}
+
+### ---------- GUESTS ----------
+
+### POST guest (good data)
+# @name createGuest
+POST {{baseUrl}}/events/{{createEvent.response.body._id}}/guests
+Content-Type: application/json
+
+{
+  "name": "John Murphy",
+  "email": "john@example.com",
+  "rsvp": "yes"
+}
+
+### POST guest (fails validation)
+POST {{baseUrl}}/events/{{createEvent.response.body._id}}/guests
+Content-Type: application/json
+
+{
+  "name": "",
+  "email": "not-an-email"
+}
+
+### GET guests for an event
+GET {{baseUrl}}/events/{{createEvent.response.body._id}}/guests
+
+### GET guests filtered by rsvp
+GET {{baseUrl}}/events/{{createEvent.response.body._id}}/guests?rsvp=yes
+
+### GET one guest
+GET {{baseUrl}}/guests/{{createGuest.response.body._id}}
+
+### PUT guest
+PUT {{baseUrl}}/guests/{{createGuest.response.body._id}}
+Content-Type: application/json
+
+{
+  "name": "John Murphy",
+  "email": "john@example.com",
+  "rsvp": "no"
+}
+
+### DELETE guest (works)
+DELETE {{baseUrl}}/guests/{{createGuest.response.body._id}}
+
+### DELETE guest (not found)
+DELETE {{baseUrl}}/guests/{{missingId}}
+
+### ---------- DELETE EVENT LAST ----------
+
+### DELETE event (works)
+DELETE {{baseUrl}}/events/{{createEvent.response.body._id}}
+
+### DELETE event (not found)
+DELETE {{baseUrl}}/events/{{missingId}}
