@@ -64,7 +64,7 @@ router.put("/:id", async (req, res) => {
     return;
   }
 
-  const event = await Event.findByIdAndUpdate(id, result.data, { new: true });
+  const event = await Event.findByIdAndUpdate(id, result.data, { returnDocument: "after" });
   if (!event) {
     res.status(404).json({ message: "Event not found" });
     return;

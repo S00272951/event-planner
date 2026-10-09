@@ -83,7 +83,7 @@ router.put("/guests/:id", async (req, res) => {
     return;
   }
 
-  const guest = await Guest.findByIdAndUpdate(id, result.data, { new: true });
+  const guest = await Guest.findByIdAndUpdate(id, result.data, { returnDocument: "after" });
   if (!guest) {
     res.status(404).json({ message: "Guest not found" });
     return;
