@@ -1,22 +1,11 @@
-import "dotenv/config";
-import { beforeAll, afterAll, beforeEach } from "vitest";
-import mongoose from "mongoose";
-import { Event } from "../src/models/event";
-import { Guest } from "../src/models/guest";
+import { connectDB, disconnectDB } from '../src/config/database';
 
 beforeAll(async () => {
-  const uri = process.env.MONGO_URI_TEST;
-  if (!uri) {
-    throw new Error("MONGO_URI_TEST is missing from .env");
-  }
-  await mongoose.connect(uri);
+    console.log('Run once before tests');
+    await connectDB();
 });
 
 afterAll(async () => {
-  await mongoose.disconnect();
-});
-
-beforeEach(async () => {
-  await Event.deleteMany({});
-  await Guest.deleteMany({});
+    console.log('Run once after tests');
+    await disconnectDB();
 });

@@ -1,0 +1,83 @@
+@endpoint = http://localhost:3000/api/v1
+@missingId = 000000000000000000000000
+
+### ---------- EVENTS ----------
+
+###
+# @name postAnEvent
+POST {{endpoint}}/events HTTP/1.1
+content-type: application/json
+
+{ "title": "Sarah's Wedding", "date": "2026-12-20", "location": "Sligo", "description": "Ceremony and reception" }
+
+###
+@newEvent = {{postAnEvent.response.body._id}}
+
+### POST with bad data - 400
+POST {{endpoint}}/events HTTP/1.1
+content-type: application/json
+
+{ "title": "A", "date": "not a date" }
+
+### GET all events
+GET {{endpoint}}/events HTTP/1.1
+
+### GET events in Sligo
+GET {{endpoint}}/events?location=Sligo HTTP/1.1
+
+### GET one event
+GET {{endpoint}}/events/{{newEvent}} HTTP/1.1
+
+### GET an event that does not exist - 404
+GET {{endpoint}}/events/{{missingId}} HTTP/1.1
+
+### GET with a bad id - 400
+GET {{endpoint}}/events/123 HTTP/1.1
+
+### PUT update the event
+PUT {{endpoint}}/events/{{newEvent}} HTTP/1.1
+content-type: application/json
+
+{ "title": "Sarah and Tom's Wedding", "date": "2026-12-21", "location": "Sligo" }
+
+### ---------- GUESTS ----------
+
+###
+# @name postAGuest
+POST {{endpoint}}/events/{{newEvent}}/guests HTTP/1.1
+content-type: application/json
+
+{ "name": "John Murphy", "email": "john@example.com", "rsvp": "yes" }
+
+###
+@newGuest = {{postAGuest.response.body._id}}
+
+### POST guest with bad data - 400
+POST {{endpoint}}/events/{{newEvent}}/guests HTTP/1.1
+content-type: application/json
+
+{ "name": "", "email": "not-an-email" }
+
+### GET guests for the event
+GET {{endpoint}}/events/{{newEvent}}/guests HTTP/1.1
+
+### GET guests who said yes
+GET {{endpoint}}/events/{{newEvent}}/guests?rsvp=yes HTTP/1.1
+
+### GET one guest
+GET {{endpoint}}/guests/{{newGuest}} HTTP/1.1
+
+### PUT update the guest
+PUT {{endpoint}}/guests/{{newGuest}} HTTP/1.1
+content-type: application/json
+
+{ "name": "John Murphy", "email": "john@example.com", "rsvp": "no" }
+
+### DELETE the guest
+DELETE {{endpoint}}/guests/{{newGuest}} HTTP/1.1
+
+### DELETE the event (and any guests left)
+DELETE {{endpoint}}/events/{{newEvent}} HTTP/1.1
+
+### DELETE again - 404
+DELETE {{endpoint}}/events/{{newEvent}} HTTP/1.1
