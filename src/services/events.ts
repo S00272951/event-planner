@@ -5,14 +5,10 @@ import { HydratedDocument } from 'mongoose';
 export class EventService {
 
   // if a location is given only return events in that location
-  // collation strength 2 makes the match ignore upper/lower case, so "sligo" finds "Sligo"
   // events are always sorted by date, earliest first
   async getAllEvents(location?: string): Promise<IEvent[]> {
     if (location) {
-      return await EventModel.find({ location: location })
-        .collation({ locale: 'en', strength: 2 })
-        .sort({ date: 1 })
-        .lean();
+      return await EventModel.find({ location: location }).sort({ date: 1 }).lean();
     }
     return await EventModel.find().sort({ date: 1 }).lean();
   }
